@@ -16,44 +16,60 @@ Setting Up External Hard Disk
 2. Once you have reached the desktop, open a terminal. Log into the root account and mount the external hard drive.
 
 {% highlight vim %}
-`sudo su
-mount /dev/sda /mnt`
+`
+sudo su
+mount /dev/sda /mnt
+`
 {% endhighlight vim %}
 
 
 3. Next, we need to install Rsync (if it is not already installed):
 
-`apt-get install rsync`
+`
+apt-get install rsync
+`
 
 4. Copy all the files from the microSD card to the external hard drive. We are using rsync, so all file permissions and ownership are intact.
 
-`sudo rsync -axv / /mnt
-raspberry-pi-rsync`
+`
+sudo rsync -axv / /mnt
+raspberry-pi-rsync
+`
 
 5. With all the boot up files in the external hard drive, we need to modify the startup file so that it is pointing to the external hard disk for boot up instructions.
 
-`cp /boot/cmdline.txt /boot/cmdline.txt.bak
-nano /boot/cmdline.txt`
+`
+cp /boot/cmdline.txt /boot/cmdline.txt.bak
+nano /boot/cmdline.txt
+`
 
 We need to edit two parts of this line. Change the root= to /dev/sda, and at the end, add rootdelay=5.
 
 The result should look like this:
 
-`dwc_otg.lpm_enable=0 console=serial0,115200 console=tty1 root=/dev/sda1 rootfstype=ext4 elevator=deadline fsck.repair=yes rootwait rootdelay=5`
+`
+dwc_otg.lpm_enable=0 console=serial0,115200 console=tty1 root=/dev/sda1 rootfstype=ext4 elevator=deadline fsck.repair=yes rootwait rootdelay=5
+`
 
 raspberry-pi-boot-cmdline
 
 6. Lastly, we are adding the hard drive entry to “/mnt/etc/fstab” so the root folder in the external hard drive is automatically mounted during boot up.
 
-`nano /mnt/etc/fstab`
+`
+nano /mnt/etc/fstab
+`
 
 Add this line to the second line of the file:
 
-`/dev/sda1       /               ext4    defaults,noatime  0       1`
+`
+/dev/sda1       /               ext4    defaults,noatime  0       1
+`
 
 Add a “#” at the start of the last line to disable booting up from the microSD card:
 
-`#/dev/mmcblk0p7  /               ext4    defaults,noatime  0       1`
+`
+#/dev/mmcblk0p7  /               ext4    defaults,noatime  0       1
+`
 
 Note: /devmncblk0p7 is referring to your microSD card slot and the value might differ in your case.
 
@@ -72,10 +88,14 @@ Assuming your external hard drive comes with tons of space, you might want to in
 
 1. Open a terminal and log into the root account.
 
-`sudo su`
+`
+sudo su
+`
 2. Edit the swapfile.
 
-`nano /etc/dphys-swapfile`
+`
+nano /etc/dphys-swapfile
+`
 
 Change the value of `CONF_SWAPSIZE `from 100 to 512. Save and exit the file.
  
@@ -83,9 +103,11 @@ raspberry-pi-swapfile
 
 3. Restart the service to update the changes.
 
-`sudo dphys-swapfile setup
+`
+sudo dphys-swapfile setup
 sudo /etc/init.d/dphys-swapfile stop
-sudo /etc/init.d/dphys-swapfile start`
+sudo /etc/init.d/dphys-swapfile start
+`
 
 #### Conclusion
 The Raspberry Pi 3 comes with several useful improvements such as higher RAM, a WiFi module and a power supply big enough to support an external hard drive. This makes it useful to run bigger and more intensive projects. As such, the microSD card with a small storage size can be a limiting factor, not to mention its slow read/write speed and it being susceptible to data corruption. With the instructions above, you can now power your Raspberry Pi from the external hard drive and improve its performance.
